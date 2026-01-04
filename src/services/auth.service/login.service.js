@@ -1,27 +1,48 @@
-const authRepository = require('../repositories/auth.repository');
-const ApiError = require('../utils/ApiError'); // your global error helper
-const httpStatus = require('http-status'); // optional, use constants for status codes
-const {generateAccessToken,generateRefreshToken} = require('../utils/token')
-const {comparePassword} = require('../../utils/hash.utils')
+const authRepository = require("../repositories/auth.repository");
+const ApiError = require("../utils/ApiError");
+const httpStatus = require("http-status");
+const { generateAccessToken, generateRefreshToken } = require("../utils/token");
+const { comparePassword } = require("../../utils/hash.utils");
+const redis = require("../../config/redis");
+const { v4: uuidv4 } = require("uuid");
 
-const login = async (email, password) => {
+const login = async (email, password, req) => {
   const user = await authRepository.findUserByEmail(email);
 
   if (!user) {
-    throw new ApiError(httpStatus.UNAUTHORIZED, 'Invalid email or password');
+    throw new ApiError(httpStatus.UNAUTHORIZED, "Invalid email or password");
   }
 
-  const isMatch = await comparePassword(password,user.password);
-
+  const isMatch = await comparePassword(password, user.password);
   if (!isMatch) {
-    throw new ApiError(httpStatus.UNAUTHORIZED, 'Invalid email or password');
+    throw new ApiError(httpStatus.UNAUTHORIZED, "Invalid email or password");
   }
 
-  const accessToken = generateAccessToken({ id: user._id, email: user.email });
-  const refreshToken = generateRefreshToken({ id: user._id, email: user.email });
+  const sessionId = uuidv4();
 
-  // Save refresh token and mark as logged in
-  await authRepository.updateUserRefreshToken(user._id, refreshToken);
+  const sessionKey = `session:${sessionId}`;
+
+  await redis.set(
+    sessionKey,
+    JSON.stringify({
+      userId: user._id,
+      role: user.role,
+      ip: req.ip,
+      userAgent: req.headers["user-agent"],
+    }),
+    "EX",
+    60 * 60 * 24 * 7
+  );
+
+  const accessToken = generateAccessToken({
+    userId: user._id,
+    role: user.role,
+  });
+
+  const refreshToken = generateRefreshToken({
+    userId: user._id,
+    sessionId,
+  });
 
   return {
     accessToken,
@@ -34,4 +55,4 @@ const login = async (email, password) => {
   };
 };
 
-module.exports = login
+module.exports = login;

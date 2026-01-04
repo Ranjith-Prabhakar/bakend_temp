@@ -9,16 +9,14 @@ const authMiddleware = (req, res, next) => {
     return next(new ApiError(401, "Unauthorized"));
   }
 
-  const accessToken = authHeader.split(" ")[1];
+  const token = authHeader.split(" ")[1];
 
   try {
-    const decoded = verifyToken(accessToken, JWT_ACCESS_SECRET, "access");
-
+    const decoded = verifyToken(token, JWT_ACCESS_SECRET, "access");
     req.user = decoded;
-
     next();
   } catch {
-    return next(new ApiError(401, "Unauthorized"));
+    next(new ApiError(401, "Unauthorized"));
   }
 };
 
