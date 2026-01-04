@@ -5,7 +5,4 @@ module.exports = {
   ACTIVE: "active",
   INACTIVE: "inactive",
   BLOCKED: "blocked",
-  STATUS_CODE: "statusCode",
-  MESSAGE: "message",
-  ADDITIONAL_MESSAGE: "additionalMessage",
 };

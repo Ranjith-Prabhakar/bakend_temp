@@ -5,6 +5,7 @@ const environmentVariables = {
   MY_SQL_PASSWORD: null,
   MY_SQL_DATABASE_NAME: null,
   MY_SQL_HOST: null,
+  UPSTASH_REDIS_URL: null,
   PORT: null,
   NODE_ENV: null,
   JWT_ACCESS_SECRET: null,
