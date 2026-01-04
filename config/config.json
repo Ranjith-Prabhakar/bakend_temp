@@ -1,22 +1,22 @@
 {
   "development": {
-    "username": "mysql",
+    "username": "root",
     "password": "mysql123",
-    "database": "database_development",
+    "database": "backendtemp",
     "host": "127.0.0.1",
     "dialect": "mysql"
   },
   "test": {
-    "username": "mysql",
+    "username": "root",
     "password": "mysql123",
-    "database": "database_test",
+    "database": "backendtemp",
     "host": "127.0.0.1",
     "dialect": "mysql"
   },
   "production": {
-    "username": "mysql",
+    "username": "root",
     "password": "mysql123",
-    "database": "database_production",
+    "database": "backendtemp",
     "host": "127.0.0.1",
     "dialect": "mysql"
   }

@@ -1,8 +1,9 @@
-const User = require('../models/user.model');
+const User = require("../../../models/user");
 
-// Find user by email
 const findUserByEmail = async (email) => {
-  return await User.findOne({ email });
+  return await User.findOne({
+    where: { email },
+  });
 };
 
-module.exports = findUserByEmail
+module.exports = findUserByEmail;

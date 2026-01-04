@@ -1,39 +1,24 @@
-const { default: ApiError } = require('../utils/ApiError');
-const { verifyToken } = require('../utils/token');
-const { JWT_ACCESS_SECRET } = require('../config/env');
-const { isUserLoggedIn } = require('../repositories/user.repository');
+const ApiError = require("../utils/ApiError");
+const { verifyToken } = require("../utils/token");
+const { JWT_ACCESS_SECRET } = require("../configs/env");
 
-const authMiddleware = async (req, res, next) => {
+const authMiddleware = (req, res, next) => {
+  const authHeader = req.headers.authorization;
+
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    return next(new ApiError(401, "Unauthorized"));
+  }
+
+  const accessToken = authHeader.split(" ")[1];
+
   try {
-    const authHeader = req.headers['authorization'];
-    let accessToken
-    if (authHeader && authHeader.startsWith('Bearer ')) {
-      accessToken = authHeader.split(' ')[1]; // This gets the token part
-      if (!accessToken) {
-        throw new ApiError(401, 'Access token required');
-      }
-    } else {
-      console.log('Authorization header not found or invalid format');
-    }
-
-
-    let decoded;
-    try {
-      decoded = verifyToken(accessToken, JWT_ACCESS_SECRET);
-    } catch (err) {
-      if (err.name === 'TokenExpiredError') {
-        throw new ApiError(401, 'Access token expired');
-      } else {
-        throw new ApiError(401, 'Invalid access token');
-      }
-    }
+    const decoded = verifyToken(accessToken, JWT_ACCESS_SECRET, "access");
 
     req.user = decoded;
-    return next();
 
-  } catch (error) {
-    console.log(error);
-    next(error); // Properly forward to error handling middleware
+    next();
+  } catch {
+    return next(new ApiError(401, "Unauthorized"));
   }
 };
 

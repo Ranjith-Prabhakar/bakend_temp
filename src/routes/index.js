@@ -1,15 +1,13 @@
-const express = require('express');
+const express = require("express");
 
-const authRoute = require('./auth.routes');
-const refreshRoute = require('./refres.routes')
+const authRoute = require("./auth.routes");
 
 function routes() {
-    const router = express.Router();
+  const router = express.Router();
 
-    router.use('/auth', authRoute());
-    router.use('/refresh',refreshRoute())
+  router.use("/auth", authRoute());
 
-    return router;
+  return router;
 }
 
 module.exports = routes;

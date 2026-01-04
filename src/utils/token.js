@@ -1,19 +1,54 @@
-const jwt = require('jsonwebtoken');
-const { JWT_ACCESS_SECRET, JWT_REFRESH_SECRET } = require('../configs/env');
+const jwt = require("jsonwebtoken");
+const {
+  JWT_ACCESS_SECRET,
+  JWT_REFRESH_SECRET,
+  JWT_ISSUER,
+  JWT_AUDIENCE,
+} = require("../configs/env");
 
-// Create access token
-const generateAccessToken = (payload) => {
-  return jwt.sign(payload, JWT_ACCESS_SECRET, { expiresIn: '15m' });
+const generateAccessToken = ({ userId, role }) => {
+  return jwt.sign(
+    {
+      userId,
+      role,
+      tokenType: "access",
+    },
+    JWT_ACCESS_SECRET,
+    {
+      expiresIn: "15m",
+      issuer: JWT_ISSUER,
+      audience: JWT_AUDIENCE,
+    }
+  );
 };
 
-// Create refresh token
-const generateRefreshToken = (payload) => {
-  return jwt.sign(payload, JWT_REFRESH_SECRET, { expiresIn: '7d' });
+const generateRefreshToken = ({ userId, sessionId }) => {
+  return jwt.sign(
+    {
+      userId,
+      sid: sessionId,
+      tokenType: "refresh",
+    },
+    JWT_REFRESH_SECRET,
+    {
+      expiresIn: "7d",
+      issuer: JWT_ISSUER,
+      audience: JWT_AUDIENCE,
+    }
+  );
 };
 
-// Verify token
-const verifyToken = (token, secret) => {
-  return jwt.verify(token, secret);
+const verifyToken = (token, secret, expectedType) => {
+  const decoded = jwt.verify(token, secret, {
+    issuer: JWT_ISSUER,
+    audience: JWT_AUDIENCE,
+  });
+
+  if (expectedType && decoded.tokenType !== expectedType) {
+    throw new Error("Invalid token type");
+  }
+
+  return decoded;
 };
 
 module.exports = {

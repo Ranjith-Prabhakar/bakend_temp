@@ -1,8 +1,9 @@
-
-const login = require('./login')
-const signup = require('./signup')
+const login = require("./login.service");
+const signup = require("./signup.service");
+const refresh = require("./refresh.service");
 
 module.exports = {
   signup,
-  login
+  login,
+  refresh,
 };
