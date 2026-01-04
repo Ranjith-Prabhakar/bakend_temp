@@ -7,7 +7,9 @@ const {
   signupController,
   loginController,
   refreshController,
+  logutController,
 } = require("../controllers/authController");
+const authMiddleware = require("../middlewares/authMiddleware");
 
 function authRoutes() {
   const router = express.Router();
@@ -22,6 +24,7 @@ function authRoutes() {
     tryCatchHandler(loginController)
   );
   router.get("/refresh", tryCatchHandler(refreshController));
+  router.get("/logout", authMiddleware, tryCatchHandler(logutController));
 
   return router;
 }
