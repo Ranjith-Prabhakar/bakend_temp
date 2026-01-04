@@ -4,30 +4,43 @@ const {
   generateRefreshToken,
 } = require("../../utils/token");
 const { JWT_REFRESH_SECRET } = require("../../config/env");
-const redis = require("../../config/redis");
 const ApiError = require("../../utils/ApiError");
+const { saveSession, getSession } = require("../../utils/session.utils");
 
-async function createAccessToken(refreshToken) {
-  const decoded = verifyToken(refreshToken, JWT_REFRESH_SECRET, "refresh");
+async function updateTokens(refreshToken) {
+  const decoded = verifyToken(refreshToken, JWT_REFRESH_SECRET);
+  const { userId, sid, role } = decoded;
 
-  const { userId, sid } = decoded;
-
-  const session = await redis.get(`session:${sid}`);
+  const session = await getSession(sid);
   if (!session) {
     throw new ApiError(401, "Session expired");
   }
 
-  const accessToken = generateAccessToken({ userId });
+  if (session.refreshToken !== refreshToken) {
+    throw new ApiError(401, "Invalid refresh token");
+  }
 
-  const newRefreshToken = generateRefreshToken({
-    userId,
-    sessionId: sid,
+  const accessToken = generateAccessToken({ userId, role });
+  const newRefreshToken = generateRefreshToken({ userId, sessionId: sid });
+
+  await saveSession(sid, {
+    id: session._id,
+    role: session.role,
+    name: session.name,
+    email: session.email,
+    refreshToken: newRefreshToken,
   });
 
   return {
     accessToken,
     refreshToken: newRefreshToken,
+    user: {
+      id: session._id,
+      role: session.role,
+      name: session.name,
+      email: session.email,
+    },
   };
 }
 
-module.exports = createAccessToken;
+module.exports = updateTokens;

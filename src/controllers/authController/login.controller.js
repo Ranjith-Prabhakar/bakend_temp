@@ -1,8 +1,5 @@
 const authService = require("../../services/auth.service");
-const {
-  accessTokenOptions,
-  refreshTokenOptions,
-} = require("../../configs/cookie");
+const { refreshTokenOptions } = require("../../configs/cookie");
 
 const loginController = async (req, res) => {
   const { email, password } = req.body;
@@ -13,13 +10,12 @@ const loginController = async (req, res) => {
     req
   );
 
-  res.cookie("accessToken", accessToken, accessTokenOptions);
   res.cookie("refreshToken", refreshToken, refreshTokenOptions);
 
   res.status(200).json({
     success: true,
     message: "Login successful",
-    data: user,
+    data: { accessToken, user },
   });
 };
 

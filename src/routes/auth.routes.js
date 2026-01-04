@@ -2,7 +2,6 @@ const express = require("express");
 const tryCatchHandler = require("../utils/tryCatch");
 const validate = require("../middlewares/genericValidator");
 const { signupSchema, loginSchema } = require("../validators/authValidators");
-const authMiddleware = require("../middlewares/authMiddleware");
 
 const {
   signupController,

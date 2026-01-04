@@ -1,13 +1,12 @@
 const authRepository = require("../repositories/auth.repository");
 const ApiError = require("../utils/ApiError");
-const httpStatus = require("http-status");
-const { hashPassword } = require("../../utils/hash.utils");
+const { hashPassword } = require("../../utils/hashing");
 
 const signup = async (userData) => {
   const existingUser = await authRepository.findUserByEmail(userData.email);
 
   if (existingUser) {
-    throw new ApiError(httpStatus.BAD_REQUEST, "Email already in use");
+    throw new ApiError(409, "Email already in use");
   }
 
   const hashedPassword = await hashPassword(userData.password);

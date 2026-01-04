@@ -1,4 +1,4 @@
-const { createAccessToken } = require("../../services/refresh.service");
+const { updateTokens } = require("../../services/refresh.service");
 const { refreshTokenOptions } = require("../../config/cookie");
 
 async function refreshController(req, res) {
@@ -8,15 +8,17 @@ async function refreshController(req, res) {
     throw new ApiError(401, "Unauthorized");
   }
 
-  const { accessToken, refreshToken: newRefreshToken } =
-    await createAccessToken(refreshToken);
+  const { accessToken, refreshToken: newRefreshToken } = await updateTokens(
+    refreshToken
+  );
 
   res
     .cookie("refreshToken", newRefreshToken, refreshTokenOptions)
     .status(200)
     .json({
       success: true,
-      accessToken,
+      message: "Token refreshed successfuliy",
+      data: { accessToken, user },
     });
 }
 

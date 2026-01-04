@@ -1,22 +1,52 @@
 const ApiError = require("../utils/ApiError");
 const { verifyToken } = require("../utils/token");
-const { JWT_ACCESS_SECRET } = require("../configs/env");
+const { JWT_ACCESS_SECRET, JWT_REFRESH_SECRET } = require("../configs/env");
+const { getSession } = require("../utils/session.utils");
 
-const authMiddleware = (req, res, next) => {
-  const authHeader = req.headers.authorization;
-
-  if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    return next(new ApiError(401, "Unauthorized"));
-  }
-
-  const token = authHeader.split(" ")[1];
-
+const authMiddleware = async (req, res, next) => {
   try {
-    const decoded = verifyToken(token, JWT_ACCESS_SECRET, "access");
-    req.user = decoded;
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      throw new ApiError(401, "Access token missing");
+    }
+
+    const accessToken = authHeader.split(" ")[1];
+
+    const refreshToken = req.cookies?.refreshToken;
+    if (!refreshToken) {
+      throw new ApiError(401, "Refresh token missing");
+    }
+
+    verifyToken(accessToken, JWT_ACCESS_SECRET);
+    const refreshPayload = verifyToken(refreshToken, JWT_REFRESH_SECRET);
+
+    const { sid } = refreshPayload;
+    if (!sid) {
+      throw new ApiError(401, "Invalid refresh token payload");
+    }
+
+    const sessionData = await getSession(sid);
+    if (!sessionData) {
+      throw new ApiError(401, "Session expired");
+    }
+
+    const session = JSON.parse(sessionData);
+
+    if (session.refreshToken !== refreshToken) {
+      throw new ApiError(401, "Refresh token mismatch");
+    }
+
+    req.user = {
+      userId: session.userId,
+      name: session.name,
+      email: session.email,
+      role: session.role,
+      sessionId: sid,
+    };
+
     next();
-  } catch {
-    next(new ApiError(401, "Unauthorized"));
+  } catch (err) {
+    next(err);
   }
 };
 
