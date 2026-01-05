@@ -1,11 +1,7 @@
-const createUser  = require('./createUser')
-const updateUserRefreshToken  = require('./updateUserRefreshToken')
-const findUserByEmail  = require('./findUserByEmail')
-const isUserLoggedIn = require('./isUserLoggedIn');
+const createUser = require("./createUser");
+const findUserByEmail = require("./findUserByEmail");
 
 module.exports = {
   createUser,
-  updateUserRefreshToken,
   findUserByEmail,
-  isUserLoggedIn
 };

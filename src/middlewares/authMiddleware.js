@@ -1,6 +1,6 @@
 const ApiError = require("../utils/ApiError");
 const { verifyToken } = require("../utils/token");
-const { JWT_ACCESS_SECRET, JWT_REFRESH_SECRET } = require("../configs/env");
+const { JWT_ACCESS_SECRET, JWT_REFRESH_SECRET } = require("../config/env");
 const { getSession } = require("../utils/session.utils");
 
 const authMiddleware = async (req, res, next) => {

@@ -1,5 +1,5 @@
 const authService = require("../../services/auth.service");
-const { refreshTokenOptions } = require("../../configs/cookie");
+const { refreshTokenOptions } = require("../../config/cookie");
 
 const loginController = async (req, res) => {
   const { email, password } = req.body;

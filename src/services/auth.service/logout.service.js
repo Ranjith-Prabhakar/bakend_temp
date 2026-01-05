@@ -1,5 +1,5 @@
 const { verifyToken } = require("../../utils/token");
-const { JWT_REFRESH_SECRET } = require("../../configs/env");
+const { JWT_REFRESH_SECRET } = require("../../config/env");
 const { deleteSession } = require("../../utils/session.utils");
 
 const logout = async (refreshToken) => {

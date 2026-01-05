@@ -1,11 +1,11 @@
-const rateLimit = require('express-rate-limit');
-const cookieParser = require('cookie-parser');
-const cors = require('cors');
-const helmet = require('helmet');
-const mongoSanitize = require('express-mongo-sanitize');
-const express = require('express');
-const rateLimitOptions = require('../configs/rateLimit');
-const corsOptions = require('./configs/cors');
+const rateLimit = require("express-rate-limit");
+const cookieParser = require("cookie-parser");
+const cors = require("cors");
+const helmet = require("helmet");
+const mongoSanitize = require("express-mongo-sanitize");
+const express = require("express");
+const rateLimitOptions = require("../config/rateLimit");
+const corsOptions = require("../config/cors");
 
 function appLevelMiddleWares(app) {
   app.use(helmet());

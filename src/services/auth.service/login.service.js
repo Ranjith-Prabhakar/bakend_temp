@@ -1,6 +1,9 @@
-const authRepository = require("../repositories/auth.repository");
-const ApiError = require("../utils/ApiError");
-const { generateAccessToken, generateRefreshToken } = require("../utils/token");
+const authRepository = require("../../repositories/auth.repository");
+const ApiError = require("../../utils/ApiError");
+const {
+  generateAccessToken,
+  generateRefreshToken,
+} = require("../../utils/token");
 const { comparePassword } = require("../../utils/hashing");
 const { saveSession } = require("../../utils/session.utils");
 const { v4: uuidv4 } = require("uuid");

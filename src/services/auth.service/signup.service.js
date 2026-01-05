@@ -1,5 +1,5 @@
-const authRepository = require("../repositories/auth.repository");
-const ApiError = require("../utils/ApiError");
+const authRepository = require("../../repositories/auth.repository");
+const ApiError = require("../../utils/ApiError");
 const { hashPassword } = require("../../utils/hashing");
 
 const signup = async (userData) => {

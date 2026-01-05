@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const { JWT_ACCESS_SECRET, JWT_REFRESH_SECRET } = require("../configs/env");
+const { JWT_ACCESS_SECRET, JWT_REFRESH_SECRET } = require("../config/env");
 
 const generateAccessToken = ({ userId, role }) => {
   return jwt.sign(

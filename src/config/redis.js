@@ -1,9 +1,6 @@
 const Redis = require("ioredis");
 
-const redis = new Redis(process.env.UPSTASH_REDIS_URL, {
-  maxRetriesPerRequest: null,
-  enableReadyCheck: false,
-});
+const redis = new Redis(process.env.UPSTASH_REDIS_URL);
 
 redis.on("connect", () => {
   console.log("Redis connected");

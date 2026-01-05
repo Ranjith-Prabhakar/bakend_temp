@@ -1,4 +1,4 @@
-const { updateTokens } = require("../../services/refresh.service");
+const { refresh } = require("../../services/auth.service");
 const { refreshTokenOptions } = require("../../config/cookie");
 
 async function refreshController(req, res) {
@@ -8,7 +8,7 @@ async function refreshController(req, res) {
     throw new ApiError(401, "Unauthorized");
   }
 
-  const { accessToken, refreshToken: newRefreshToken } = await updateTokens(
+  const { accessToken, refreshToken: newRefreshToken } = await refresh(
     refreshToken
   );
 
